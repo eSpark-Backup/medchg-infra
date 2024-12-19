@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: local-pv
+spec:
+  capacity:
+    storage: 15Gi
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: standard
+  mountOptions:
+    - dir_mode=0777
+    - file_mode=0777  
+  local:
+    path: "/opt/volume/kubernates"
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: kubernetes.io/hostname
+              operator: In
+              values:
+                - ip-10-0-20-180 #worker1
