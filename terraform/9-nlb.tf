@@ -3,6 +3,7 @@ resource "aws_lb" "k8s-nlb" {
   name               = "k8s-nlb"
   internal           = false
   load_balancer_type = "network"
+  security_groups    = [aws_security_group.k8s_nlb.id]
   subnet_mapping {
     subnet_id = aws_subnet.k8s-public.id
   }

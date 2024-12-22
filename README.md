@@ -5,8 +5,8 @@ cd ~/.ssh/
 nano id_rsa
 sudo chmod 400 id_rsa
 cd ..
-ssh -i ~/.ssh/id_rsa ubuntu@10.0.10.87 #master 
-ssh -i ~/.ssh/id_rsa ubuntu@10.0.20.57 #worker1
+ssh -i ~/.ssh/id_rsa ubuntu@10.0.20.23 #master 
+ssh -i ~/.ssh/id_rsa ubuntu@10.0.20.104 #worker1
 
 
 # master k9s ui
@@ -16,7 +16,7 @@ sudo apt install ./k9s_linux_amd64.deb && rm k9s_linux_amd64.deb
 
 # init cluster
 IPADDR=$(hostname -i)
-POD_CIDR="10.244.0.0/16"
+POD_CIDR="192.168.0.0/16"
 sudo kubeadm init --apiserver-advertise-address=$IPADDR  --apiserver-cert-extra-sans=$IPADDR  --pod-network-cidr=$POD_CIDR 
 
 
@@ -25,11 +25,14 @@ sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
 # join
-sudo kubeadm join 10.0.10.87:6443 --token ocxhri.tuvevhrsge0q40aa \
-        --discovery-token-ca-cert-hash sha256:a899c5e68ccc2a5e47aa24424e043a6f2a372b6141ad3269f6a26204a60a4e3a
+sudo kubeadm join 10.0.20.23:6443 --token 9zvzd2.cq6c1rkinnto86ko \
+        --discovery-token-ca-cert-hash sha256:eedb3092595a1e3b2b9b5435e019a2a728685a6c4bbd2f3dd7bd0d99ff4a9687
 		
 # install CNI flanel
 kubectl apply -f https://github.com/coreos/flannel/raw/master/Documentation/kube-flannel.yml
+# Install calico better performance 
+kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.25.0/manifests/calico.yaml
+
 
 # install helm 
 curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
