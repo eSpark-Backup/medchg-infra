@@ -7,3 +7,4 @@ terraform.tfvars
 *.crt
 *.key
 services/testdep/WebApplication1/
+creds/

@@ -68,46 +68,64 @@ sudo kubeadm reset
 sudo rm $HOME/.kube/config
 sudo rm -rf /etc/cni /etc/kubernetes /var/lib/dockershim /var/lib/etcd /var/lib/kubelet /var/run/kubernetes ~/.kube/*
 
+# rclone setup s3 windows mount
+- for mount clmmand run wihout admin
+https://medium.com/@francesco.larghi/access-amazon-s3-bucket-as-a-local-drive-on-windows-2b721100a34a
+## Mount s3 to windows 
+- cd C:\rclone> .\rclone.exe mount k8s-backup-231224:k8s-backup-231224/ S: --vfs-cache-mode full
 
+# Mount s3 to ec2 
+sudo apt-get update -y
+sudo apt-get install awscli -y
+sudo apt-get install s3fs -y
+sudo mkdir /mnt/s3-bucket
+cd /mnt/s3-bucket 
+## just for test 
+sudo touch test1.txt test2.txt 
+aws s3 sync /mnt/s3-bucket s3://k8s-backup-231224
+sudo s3fs k8s-backup-231224 /mnt/s3-bucket -o iam_role=k8s-s3-backup-access-role -o use_cache=/tmp -o allow_other -o uid=1001 -o mp_umask=002 -o multireq_max=5 -o use_path_request_style -o url=https://s3-{{aws_region}}.amazonaws.com
+df -h | grep s3fs
 
 # Status
 
-[ ] K8s Infra
-	[x] EC2 Security 
-		[x] SSH only via bastian 
-		[x] Private Subnet
-	[ ] Services
-		[x] NGINX Ingress
-		[x] Test Deploy (for testing)
-		[x] CNPG Posgress
-			[x] Local storage PV 
-			[x] User can access db via dfwcriticalcare.medchg.com:5432
-		[x] PGAdmin Web point to dfwcriticalcare.medchg.com
-			[x] SSL Fake certificate 
-	[x] Terraform
-		[x] SSH
-		[x] VPC
-		[x] Security Groups
-		[x] Subnets
-		[x] EC2
-			[x] Bastian
-			[x] Master
-				[x] UserData
-					[x] Kuebernates
-						[x] Kubectl
-						[x] KubeAdmin
-						[x] Config
-					[x] Auto Complete 
-			[x] Workers
-				[x] UserData
-					[x] Kuebernates
-						[x] Kubectl
-						[x] KubeAdmin
-						[x] Config
-					[x] Auto Complete 		
-		[x] Target Groups
-			[x] HTTP Ingress
-			[x] HTTPS Ingress
-			[x] DB30543 RW
-		[x] NLB 
-		[x] Route53
+- [ ] K8s Infra
+	- [x] EC2 Security 
+		- [x] SSH only via bastian 
+		- [x] Private Subnet
+	- [ ] Services
+		- [x] NGINX Ingress
+		- [x] Test Deploy (for testing)
+		- [x] CNPG Posgress
+			- [x] Local storage PV 
+			- [x] User can access db via dfwcriticalcare.medchg.com:5432
+			- [x] Cloud backup on demand
+			- [ ] Cloud backup periodic
+		- [x] PGAdmin Web point to dfwcriticalcare.medchg.com
+			- [x] SSL Fake certificate 
+	- [x] Terraform
+		- [x] SSH
+		- [x] VPC
+		- [x] Security Groups
+		- [x] Subnets
+		- [x] EC2
+			- [x] Bastian
+			- [x] Master
+				- [x] UserData
+					- [x] Kuebernates
+						- [x] Kubectl
+						- [x] KubeAdmin
+						- [x] Config
+					- [x] Auto Complete 
+			- [x] Workers
+				- [x] UserData
+					- [x] Kuebernates
+						- [x] Kubectl
+						- [x] KubeAdmin
+						- [x] Config
+					- [x] Auto Complete 		
+		- [x] Target Groups
+			- [x] HTTP Ingress
+			- [x] HTTPS Ingress
+			- [x] DB30543 RW
+		- [x] NLB 
+		- [x] Route53

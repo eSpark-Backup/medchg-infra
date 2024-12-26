@@ -37,6 +37,20 @@ spec:
       secret:
         name: admin
         
+  # Backup properties
+  backup:
+    barmanObjectStore:
+      destinationPath: "s3://k8s-backup-231224/dbbackup"
+      s3Credentials:
+        accessKeyId:
+          name: aws-s3-credentials
+          key: AWS_ACCESS_KEY_ID
+        secretAccessKey:
+          name: aws-s3-credentials
+          key: AWS_SECRET_ACCESS_KEY
+      wal:
+        compression: gzip      
+        
   resources:
     requests:
       memory: "512Mi"

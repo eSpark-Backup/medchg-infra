@@ -1,0 +1,8 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Backup
+metadata:
+  name: pg-backup-now
+  namespace: dev-cnpg    
+spec:
+  cluster:
+    name: dbserver
