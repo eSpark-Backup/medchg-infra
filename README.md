@@ -1,12 +1,12 @@
-ssh -i ~/.ssh/id_rsa ubuntu@54.226.193.7 #bastian
+ssh -i ~/.ssh/id_rsa ubuntu@54.92.129.142 #bastian
 
 # on bastian 
 cd ~/.ssh/
 nano id_rsa
 sudo chmod 400 id_rsa
 cd ..
-ssh -i ~/.ssh/id_rsa ubuntu@10.0.20.23 #master 
-ssh -i ~/.ssh/id_rsa ubuntu@10.0.20.104 #worker1
+ssh -i ~/.ssh/id_rsa ubuntu@10.0.20.131 #master 
+ssh -i ~/.ssh/id_rsa ubuntu@10.0.20.113 #worker1
 
 
 # master k9s ui
@@ -25,11 +25,11 @@ sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
 # join
-sudo kubeadm join 10.0.20.23:6443 --token 9zvzd2.cq6c1rkinnto86ko \
-        --discovery-token-ca-cert-hash sha256:eedb3092595a1e3b2b9b5435e019a2a728685a6c4bbd2f3dd7bd0d99ff4a9687
+sudo kubeadm join 10.0.20.131:6443 --token frthm2.33sqv5ox26os7hw6 \
+        --discovery-token-ca-cert-hash sha256:f8fd517a5a857cf40a9409c7a267ddd9b718387b50466c9c3590a3d879601c23
 		
 # install CNI flanel
-kubectl apply -f https://github.com/coreos/flannel/raw/master/Documentation/kube-flannel.yml
+#kubectl apply -f https://github.com/coreos/flannel/raw/master/Documentation/kube-flannel.yml
 # Install calico better performance 
 kubectl apply -f https://raw.githubusercontent.com/projectcalico/calico/v3.25.0/manifests/calico.yaml
 
@@ -87,7 +87,12 @@ sudo s3fs k8s-backup-231224 /mnt/s3-bucket -o iam_role=k8s-s3-backup-access-role
 df -h | grep s3fs
 
 # Status
-
+- [ ] K8s 
+	- [x] CNI Calico
+	- [x] Ingress Nginx
+	- [x] Storage Class
+		- [x] no provision 
+		- [ ] 
 - [ ] K8s Infra
 	- [x] EC2 Security 
 		- [x] SSH only via bastian 

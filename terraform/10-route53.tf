@@ -1,7 +1,7 @@
 # Route 53 A Record
 resource "aws_route53_record" "k8s-test" {
   zone_id = "Z052580425Z8NYFH0JUZW"
-  name    = "dfwcriticalcare.medchg.com" # Replace with your desired subdomain
+  name    = "gitops.medchg.com" # Replace with your desired subdomain
   type    = "A"
 
   alias {
