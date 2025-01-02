@@ -20,4 +20,4 @@ spec:
             - key: kubernetes.io/hostname
               operator: In
               values:
-                - ip-10-0-20-113 #worker1
+                - ip-10-0-20-217 #worker1

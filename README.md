@@ -1,12 +1,20 @@
-ssh -i ~/.ssh/id_rsa ubuntu@54.92.129.142 #bastian
+cd /mnt/d/Projects/espark/knozi/k8s
+ssh -i ~/.ssh/id_rsa ubuntu@3.85.31.5 #bastian
+exit 
+# copy services folder for kubernates to bastian 
+scp -r services ubuntu@3.85.31.5:./ #bastian
 
+ssh -i ~/.ssh/id_rsa ubuntu@3.85.31.5 #bastian
 # on bastian 
-cd ~/.ssh/
-nano id_rsa
-sudo chmod 400 id_rsa
-cd ..
-ssh -i ~/.ssh/id_rsa ubuntu@10.0.20.131 #master 
-ssh -i ~/.ssh/id_rsa ubuntu@10.0.20.113 #worker1
+nano ~/.ssh/id_rsa
+sudo chmod 400 ~/.ssh/id_rsa
+
+# copy services folder for kubernates to bastian 
+scp -r services ubuntu@10.0.20.111:./ #master 
+
+ssh -i ~/.ssh/id_rsa ubuntu@10.0.20.111 #master 
+
+ssh -i ~/.ssh/id_rsa ubuntu@10.0.20.217 #worker1
 
 
 # master k9s ui
@@ -24,9 +32,6 @@ mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
 
-# join
-sudo kubeadm join 10.0.20.131:6443 --token frthm2.33sqv5ox26os7hw6 \
-        --discovery-token-ca-cert-hash sha256:f8fd517a5a857cf40a9409c7a267ddd9b718387b50466c9c3590a3d879601c23
 		
 # install CNI flanel
 #kubectl apply -f https://github.com/coreos/flannel/raw/master/Documentation/kube-flannel.yml
@@ -45,12 +50,37 @@ echo 'complete -o default -F __start_kubectl k' >>~/.bashrc
 
 
 # for services 
-mkdir dev
-cd dev
-mkdir services
-cd services
-mkdir nginx
-cd nginx
+cd
+cd services/nginx
+helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+helm repo update
+helm install nginx --values values.yaml ingress-nginx/ingress-nginx -n ingress-nginx --create-namespace 
+
+
+cd
+cd services/storageclass
+kubectl apply -f standard.yaml
+kubectl apply -f pv.yaml
+
+cd 
+cd services/cnpg
+kubectl apply --server-side -f \
+  https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/release-1.24/releases/cnpg-1.24.1.yaml
+kubectl create namespace dev-cnpg  
+kubectl apply -f deploy.yaml
+
+kubectl create secret generic aws-s3-credentials \
+  --from-literal=AWS_ACCESS_KEY_ID=AKIA4GX3SSVUCURASQD2 \
+  --from-literal=AWS_SECRET_ACCESS_KEY=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 -n dev-cnpg
+
+
+# join workers commands
+kubeadm token create --print-join-command # master
+sudo kubeadm join 10.0.20.111:6443 --token 4io0fz.fng3b1it65hl5gel --discovery-token-ca-cert-hash sha256:c56c4ed6ade0266ad482ba32e9fe3883ff09c9e903575ea4ff76900c34230a29
+
+# for local volumes
+sudo mkdir /opt/volume
+sudo mkdir /opt/volume/kubernates
 
 
 # Error and fixes not working
