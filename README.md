@@ -1,21 +1,23 @@
-cd /mnt/d/Projects/espark/knozi/k8s
-ssh -i ~/.ssh/id_rsa ubuntu@3.85.31.5 #bastian
-exit 
+# update pv worker ip 
 # copy services folder for kubernates to bastian 
-scp -r services ubuntu@3.85.31.5:./ #bastian
+cd /mnt/d/Projects/espark/knozi/k8s
+scp -r services ubuntu@50.16.82.119:./ #bastian
+scp ~/.ssh/id_rsa ubuntu@50.16.82.119:~/.ssh/ #bastian
 
-ssh -i ~/.ssh/id_rsa ubuntu@3.85.31.5 #bastian
-# on bastian 
-nano ~/.ssh/id_rsa
+ssh -i ~/.ssh/id_rsa ubuntu@50.16.82.119 #bastian
 sudo chmod 400 ~/.ssh/id_rsa
 
+
+
 # copy services folder for kubernates to bastian 
-scp -r services ubuntu@10.0.20.111:./ #master 
+scp -r services ubuntu@10.0.20.221:./ #master 
 
-ssh -i ~/.ssh/id_rsa ubuntu@10.0.20.111 #master 
+ssh -i ~/.ssh/id_rsa ubuntu@10.0.20.221 #master 
 
-ssh -i ~/.ssh/id_rsa ubuntu@10.0.20.217 #worker1
-
+ssh -i ~/.ssh/id_rsa ubuntu@10.0.20.227 #worker1
+# for local volumes on each worker
+sudo mkdir /opt/volume
+sudo mkdir /opt/volume/kubernates
 
 # master k9s ui
 wget https://github.com/derailed/k9s/releases/download/v0.32.7/k9s_linux_amd64.deb
@@ -48,6 +50,11 @@ chmod 700 get_helm.sh
 echo 'alias k=kubectl' >>~/.bashrc
 echo 'complete -o default -F __start_kubectl k' >>~/.bashrc
 
+# join workers commands
+kubeadm token create --print-join-command # master
+sudo kubeadm join 10.0.20.221:6443 --token 83ky3x.ehj3r7w85qq1e7q4 \
+        --discovery-token-ca-cert-hash sha256:12f737935485b6c316c406258b6e7b9db96e9dcc6f0f045e1ebcef320e30cf50
+
 
 # for services 
 cd
@@ -66,6 +73,9 @@ cd
 cd services/cnpg
 kubectl apply --server-side -f \
   https://raw.githubusercontent.com/cloudnative-pg/cloudnative-pg/release-1.24/releases/cnpg-1.24.1.yaml
+
+wait .....  
+  
 kubectl create namespace dev-cnpg  
 kubectl apply -f deploy.yaml
 
@@ -74,13 +84,19 @@ kubectl create secret generic aws-s3-credentials \
   --from-literal=AWS_SECRET_ACCESS_KEY=a31uILEQ1Odu70Twmex5S7s0FeIaBZjygWe6CamT -n dev-cnpg
 
 
-# join workers commands
-kubeadm token create --print-join-command # master
-sudo kubeadm join 10.0.20.111:6443 --token 4io0fz.fng3b1it65hl5gel --discovery-token-ca-cert-hash sha256:c56c4ed6ade0266ad482ba32e9fe3883ff09c9e903575ea4ff76900c34230a29
+cd 
+cd services/argocd
+kubectl create namespace argocd
+kubectl apply -n argocd -f deploy.yaml
 
-# for local volumes
-sudo mkdir /opt/volume
-sudo mkdir /opt/volume/kubernates
+wait  .... 
+
+kubectl apply -f ingress.yaml
+
+wait.... 
+
+kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
+
 
 
 # Error and fixes not working
@@ -117,17 +133,15 @@ sudo s3fs k8s-backup-231224 /mnt/s3-bucket -o iam_role=k8s-s3-backup-access-role
 df -h | grep s3fs
 
 # Status
-- [ ] K8s 
-	- [x] CNI Calico
-	- [x] Ingress Nginx
-	- [x] Storage Class
-		- [x] no provision 
-		- [ ] 
 - [ ] K8s Infra
 	- [x] EC2 Security 
 		- [x] SSH only via bastian 
 		- [x] Private Subnet
 	- [ ] Services
+		- [x] CNI Calico
+		- [x] Storage Class
+			- [x] no provision 
+			- [x] local-pv
 		- [x] NGINX Ingress
 		- [x] Test Deploy (for testing)
 		- [x] CNPG Posgress

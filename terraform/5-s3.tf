@@ -55,6 +55,12 @@ resource "aws_iam_role_policy_attachment" "k8s-s3-backup-access-attachment" {
   policy_arn = aws_iam_policy.k8s-s3-backup-access-policy.arn
 }
 
+# Attach the policy to the IAM role
+resource "aws_iam_role_policy_attachment" "k8s-s3-backup-workers-access-attachment" {
+  role       = aws_iam_role.k8s-workers-role.name
+  policy_arn = aws_iam_policy.k8s-s3-backup-access-policy.arn
+}
+
 # IAM db user 
 resource "aws_iam_user" "k8s-db-backup-user" {
   name = "k8s-db-backup-user"
