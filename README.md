@@ -144,6 +144,8 @@ df -h | grep s3fs
 			- [x] local-pv
 		- [x] NGINX Ingress
 		- [x] Test Deploy (for testing)
+		- [x] Cert Manager
+			- [x] Tested Lets Encrypt 
 		- [x] CNPG Posgress
 			- [x] Local storage PV 
 			- [x] User can access db via dfwcriticalcare.medchg.com:5432
