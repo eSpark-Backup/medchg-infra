@@ -38,8 +38,14 @@ resource "aws_iam_policy" "k8s-ecr-services-readonly-access-policy" {
 }
 
 # Attach the policy to the IAM role
-resource "aws_iam_role_policy_attachment" "k8s-ecr-access-attachment" {
+resource "aws_iam_role_policy_attachment" "k8s-ecr-workers-access-attachment" {
   role       = aws_iam_role.k8s-workers-role.name
+  policy_arn = aws_iam_policy.k8s-ecr-services-readonly-access-policy.arn
+}
+
+# Attach the policy to the IAM role
+resource "aws_iam_role_policy_attachment" "k8s-ecr-master-access-attachment" {
+  role       = aws_iam_role.k8s-master-role.name
   policy_arn = aws_iam_policy.k8s-ecr-services-readonly-access-policy.arn
 }
 

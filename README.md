@@ -180,3 +180,25 @@ df -h | grep s3fs
 			- [x] DB30543 RW
 		- [x] NLB 
 		- [x] Route53
+
+
+
+## ec2 ecr testign 
+ctr image tag docker.io/library/python:3 839119967592.dkr.ecr.us-east-1.amazonaws.com/k8s-services:3
+ctr image push 839119967592.dkr.ecr.us-east-1.amazonaws.com/k8s-services:3
+ctr image ls | grep  k8s-services
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 839119967592.dkr.ecr.us-east-1.amazonaws.com
+
+
+docker pull docker.io/crccheck/hello-world:latest
+docker tag docker.io/crccheck/hello-world:latest 839119967592.dkr.ecr.us-east-1.amazonaws.com/k8s-services:latest
+docker push 839119967592.dkr.ecr.us-east-1.amazonaws.com/k8s-services:latest
+ctr images pull 839119967592.dkr.ecr.us-east-1.amazonaws.com/k8s-services:latest
+
+aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 839119967592.dkr.ecr.us-east-1.amazonaws.com
+aws ecr get-login-password --region us-east-1 | ctr   login --username AWS --password-stdin 839119967592.dkr.ecr.us-east-1.amazonaws.com
+aws ecr get-login-password --region <region> | ctr images registry login --username AWS --password-stdin <account-id>.dkr.ecr.<region>.amazonaws.com
+
+### working commadns
+ctr image pull --user "AWS:$(aws ecr get-login-password --region us-east-1)" 839119967592.dkr.ecr.us-east-1.amazonaws.com/k8s-services:latest
+		
