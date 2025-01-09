@@ -7,9 +7,9 @@ spec:
   secretName: myapp-tls
   renewBefore: 240h
   duration: 2160h
-  commonName: dfwcriticalcare.medchg.com
+  commonName: www.dfwcriticalcare.medchg.com
   dnsNames:
-  - dfwcriticalcare.medchg.com
+  - www.dfwcriticalcare.medchg.com
   issuerRef:
     name: letsencrypt-prod
     kind: ClusterIssuer

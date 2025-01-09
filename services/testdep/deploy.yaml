@@ -44,15 +44,14 @@ metadata:
   namespace: test 
   annotations:
     kubernetes.io/ingress.class: "nginx"
-    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"  
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
 spec:
   ingressClassName: "nginx"
   tls:
   - hosts:
-    - dfwcriticalcare.medchg.com # your domain 
     - www.dfwcriticalcare.medchg.com # your domain 
     secretName: myapp-tls
-  rules: 
+  rules:        
   - host: www.dfwcriticalcare.medchg.com
   - http:
       paths:
