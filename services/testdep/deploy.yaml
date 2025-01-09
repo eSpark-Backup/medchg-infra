@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: myapp
+  namespace: test  
   labels:
     app: myapp
 spec:
@@ -16,15 +17,18 @@ spec:
     spec:
       containers:
       - name: myapp
-        image: crccheck/hello-world
+        image: 839119967592.dkr.ecr.us-east-1.amazonaws.com/k8s-services:latest
         ports:
         - containerPort: 8000
-          name: myapp-port        
+          name: myapp-port  
+      imagePullSecrets:
+      - name: regcred          
 ---
 apiVersion: v1
 kind: Service
 metadata:
   name: myapp
+  namespace: test    
 spec:
   selector:
     app: myapp
@@ -37,13 +41,17 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: myapp
+  namespace: test 
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"  
 spec:
   ingressClassName: "nginx"
   tls:
   - hosts:
     - dfwcriticalcare.medchg.com # your domain 
     - www.dfwcriticalcare.medchg.com # your domain 
-    secretName: letsencrypt-test
+    secretName: myapp-tls
   rules: 
   - host: www.dfwcriticalcare.medchg.com
   - http:
