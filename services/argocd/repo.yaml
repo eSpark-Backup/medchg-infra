@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: gitsmhrazaespark-creds
+  namespace: argocd
+  labels:
+    argocd.argoproj.io/secret-type: repository
+stringData:
+  type: git
+  url: https://github.com/smhrazaespark/argocdtest
+  username: shahmeer@esparkconsultants.com
+  password: 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

@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: d2app
+  namespace: test  
+  labels:
+    app: d2app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: d2app
+  template:
+    metadata:
+      labels:
+        app: d2app
+    spec:
+      containers:
+      - name: d2app
+        image: docker.io/nginxdemos/hello:latest
+        ports:
+        - containerPort: 80
+          name: d2app-port          
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: d2app
+  namespace: test    
+spec:
+  selector:
+    app: d2app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: d2app-port
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: d2app
+  namespace: test 
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+spec:
+  ingressClassName: "nginx"
+  tls:
+  - hosts:
+    - www.dfwcriticalcare.medchg.com # your domain 
+    secretName: d2app-tls
+  rules:        
+  - host: www.dfwcriticalcare.medchg.com
+  - http:
+      paths:
+      - path: /d2
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: d2app
+            port:
+              number: 80        
+   

@@ -19,7 +19,7 @@ spec:
       - name: myapp
         image: 839119967592.dkr.ecr.us-east-1.amazonaws.com/k8s-services:latest
         ports:
-        - containerPort: 8000
+        - containerPort: 80
           name: myapp-port  
       imagePullSecrets:
       - name: regcred          
@@ -34,7 +34,7 @@ spec:
     app: myapp
   ports:
     - protocol: TCP
-      port: 8000
+      port: 80
       targetPort: myapp-port
 ---
 apiVersion: networking.k8s.io/v1
@@ -61,5 +61,5 @@ spec:
           service:
             name: myapp
             port:
-              number: 8000        
+              number: 80        
    

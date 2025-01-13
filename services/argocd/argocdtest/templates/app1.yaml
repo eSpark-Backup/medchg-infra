@@ -1,0 +1,37 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: {{ .Values.app1.application.name }}
+  annotations:
+    #argocd-image-updater.argoproj.io/update-strategy: digest
+    argocd-image-updater.argoproj.io/image-list: master={{ .Values.app1.image.repository }}
+    argocd-image-updater.argoproj.io/master.allow-tags: regexp:^{{ .Values.source.branch }}-[0-9a-zA-Z]*
+    argocd-image-updater.argoproj.io/master.helm.image-name: image.repository
+    argocd-image-updater.argoproj.io/master.helm.image-tag: image.tag
+    argocd-image-updater.argoproj.io/master.update-strategy: newest-build
+    argocd-image-updater.argoproj.io/write-back-target: helmvalues:./values-{{ .Values.source.branch }}.yaml
+    argocd-image-updater.argoproj.io/write-back-method: git:secret:{{ .Values.source.secret }}
+    argocd-image-updater.argoproj.io/git-repository: {{ .Values.source.repoURL }} 
+    argocd-image-updater.argoproj.io/git-branch: prod    
+    argocd-image-updater.argoproj.io/master.force-update: "true"
+spec:
+  project: default
+
+  source:
+    repoURL: {{ .Values.source.repoURL }}
+    targetRevision: prod
+    path: {{ .Values.app1.application.path }}
+    helm:
+      releaseName: {{ .Values.source.branch }}
+      valueFiles:
+      - './values-{{ .Values.source.branch }}.yaml'
+  destination: 
+    server: https://kubernetes.default.svc
+    namespace: {{ .Values.source.branch }}-{{ .Values.project.name }}
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+    automated:
+      selfHeal: true
+      prune: true
+      allowEmpty: true

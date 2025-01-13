@@ -1,0 +1,20 @@
+# Default values for cdargo.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+## helm upgrade --install -f values.yaml argotest . -n aatestargo-ns --create-namespace
+project:
+ name: test1
+
+app1:
+  image:
+    repository: 839119967592.dkr.ecr.us-east-1.amazonaws.com/k8s-services
+  application:
+    path: src/app1
+    name: app1
+
+source:
+  repoURL: https://github.com/smhrazaespark/argocdtest
+  branch: prod
+  secret: argocd/gitsmhrazaespark-creds
+
+  
