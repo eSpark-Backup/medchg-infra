@@ -1,0 +1,15 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: medchg-fullstack
+  namespace: stg-ns-medchg  
+spec:
+  secretName: medchg-fullstack
+  renewBefore: 240h
+  duration: 2160h
+  commonName: stg.medchg.com
+  dnsNames:
+  - stg.medchg.com
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer

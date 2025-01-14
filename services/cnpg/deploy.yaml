@@ -80,6 +80,6 @@ spec:
       resources:
         requests:
           storage: 5Gi
-      storageClassName: standard
+      storageClassName: local
       volumeMode: Filesystem
     size: 5Gi 

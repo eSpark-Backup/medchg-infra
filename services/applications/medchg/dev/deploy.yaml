@@ -1,0 +1,106 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stg-pod-medchg-fullstack
+  namespace: stg-ns-medchg
+spec:
+  selector:
+    matchLabels:
+      run: stg-pod-medchg-fullstack
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: stg-pod-medchg-fullstack
+    spec: 
+      imagePullSecrets:
+      - name: regcred
+      containers:
+      - name: stg-pod-medchg-fullstack
+        image: 839119967592.dkr.ecr.us-east-1.amazonaws.com/medchgdev_medchg:staging_latest
+        imagePullPolicy: "Always"
+        env:  
+        - name: ASPNETCORE_ENVIRONMENT
+          value: "Staging"   
+        - name: ConnectionStrings_PostgreConnection
+          value: "Server=dbserver-rw.dev-cnpg.svc.cluster.local ;Port=5432;Database=medchg;User Id=postgres;Password=dU4zaTFIaDBiWWJDYzRUeVZBYWNCaG1TemdxdHpxeG1PVmpBbjBRSUNoc0pyU211OVBZMmZ3MnE4RUtLTHBaOQ;"            
+        - name: AllowedHosts
+          value: "*"        
+        - name: BaseAddress
+          value: http://stg.medchg.com
+        - name: ASPNETCORE_URLS
+          value: https://*:8081 
+        - name: Jwt__Audience
+          value: "st.medchg.com"
+        - name: Kestrel__Certificates__Default__Path
+          value: /stg.medchg.com.pfx
+        - name: Kestrel__Certificates__Default__Password
+          value: stg.medchg.com
+        - name: AllowedHosts
+          value: "*"               
+        volumeMounts:
+        - name: certificatesvolume
+          mountPath: /stg.medchg.com.pfx
+          subPath: stg.medchg.com.pfx
+          readOnly: true
+      volumes:
+      - name: certificatesvolume
+        secret:
+          secretName: dev-sc-identity-ssl
+          items:
+          - key: certificate
+            path: stg.medchg.com.pfx  
+      # affinity:
+        # nodeAffinity:
+          # requiredDuringSchedulingIgnoredDuringExecution:
+            # nodeSelectorTerms:
+            # - matchExpressions:
+              # - key: storage
+                # operator: NotIn
+                # values:
+                # - ssd            
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: stg-svc-fullstack
+  namespace: stg-ns-medchg
+  labels:
+    run: stg-svc-fullstack
+spec:
+  ports:
+  - port: 8081
+    protocol: TCP
+    targetPort: 8081
+  selector:
+    run: stg-pod-medchg-fullstack
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600" 
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"   
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/ssl-passthrough: "true"    
+  name: stg-ing-medchg-fullstack
+  namespace: stg-ns-medchg
+spec:
+  ingressClassName: nginx
+  tls:
+  - hosts:
+    - stg.medchg.com
+    secretName: medchg-fullstack
+  rules:
+  - host: stg.medchg.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: stg-svc-fullstack
+            port:
+              number: 8081
+    

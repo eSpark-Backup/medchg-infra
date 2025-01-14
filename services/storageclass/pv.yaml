@@ -7,7 +7,7 @@ spec:
     storage: 15Gi
   accessModes:
   - ReadWriteOnce
-  storageClassName: standard
+  storageClassName: local
   mountOptions:
     - dir_mode=0777
     - file_mode=0777  
