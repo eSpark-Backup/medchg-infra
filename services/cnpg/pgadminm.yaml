@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: pgadmin
-  namespace: cnpg-pgadmin  
+  namespace: cnpg-pgadmin
 spec:
   replicas: 1
   selector:
@@ -41,23 +41,27 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: pgadmin
-  namespace: cnpg-pgadmin    
+  namespace: cnpg-pgadmin 
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
 spec:
   ingressClassName: "nginx"
-  tls:
-  - hosts:
-    - dfwcriticalcare.medchg.com # your domain 
-    - www.dfwcriticalcare.medchg.com # your domain 
-    secretName: letsencrypt-prod
-  rules: 
-  - host: www.dfwcriticalcare.medchg.com
+  rules:
   - http:
       paths:
-      - path: /
-        pathType: ImplementationSpecific
+      - pathType: Prefix
+        path: /
         backend:
           service:
             name: pgadmin
-            port:
+            port: 
               number: 80        
+    host: pgadmin.medchg.com
+  tls:
+  - hosts:
+    - pgadmin.medchg.com
+    - www.pgadmin.medchg.com
+    secretName: cnpg-pgadmin-tls
+
    

@@ -1,3 +1,10 @@
+## SSH keep alive
+nano $HOME/.ssh/config
+Host *
+    ServerAliveInterval 500
+	
+chmod 600 ~/.ssh/config	
+
 # update pv worker ip 
 # copy services folder for kubernates to bastian 
 cd /mnt/d/Projects/espark/knozi/k8s

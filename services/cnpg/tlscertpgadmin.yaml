@@ -1,0 +1,15 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: cnpg-pgadmin-tls
+  namespace: cnpg-pgadmin    
+spec:
+  secretName: cnpg-pgadmin-tls
+  renewBefore: 240h
+  duration: 2160h
+  commonName: pgadmin.medchg.com
+  dnsNames:
+  - pgadmin.medchg.com
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer

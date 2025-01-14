@@ -1,5 +1,15 @@
 apiVersion: v1
 data:
+  password: dU4zaTFIaDBiWWJDYzRUeVZBYWNCaG1TemdxdHpxeG1PVmpBbjBRSUNoc0pyU211OVBZMmZ3MnE4RUtLTHBaOQ== #dU4zaTFIaDBiWWJDYzRUeVZBYWNCaG1TemdxdHpxeG1PVmpBbjBRSUNoc0pyU211OVBZMmZ3MnE4RUtLTHBaOQ
+  username: cG9zdGdyZXM=  #postgres
+kind: Secret
+metadata:
+  name: superuser
+  namespace: dev-cnpg
+type: kubernetes.io/basic-auth
+---
+apiVersion: v1
+data:
   password: YWRtaW4xMjM0 #admin1234
   username: YWRtaW4=  #admin
 kind: Secret
@@ -19,6 +29,11 @@ spec:
   stopDelay: 300
   primaryUpdateStrategy: unsupervised  
   imageName: ghcr.io/cloudnative-pg/postgresql:17.0
+
+  enableSuperuserAccess: true
+  superuserSecret:
+    name: superuser
+
 
   postgresql:
     parameters:
