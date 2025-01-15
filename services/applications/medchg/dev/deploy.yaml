@@ -22,12 +22,13 @@ spec:
         env:  
         - name: ASPNETCORE_ENVIRONMENT
           value: "Staging"   
+          # value: "Development"   
         - name: ConnectionStrings_PostgreConnection
-          value: "Server=dbserver-rw.dev-cnpg.svc.cluster.local ;Port=5432;Database=medchg;User Id=postgres;Password=dU4zaTFIaDBiWWJDYzRUeVZBYWNCaG1TemdxdHpxeG1PVmpBbjBRSUNoc0pyU211OVBZMmZ3MnE4RUtLTHBaOQ;"            
+          value: "Server=dbserver-rw.dev-cnpg.svc.cluster.local ;Port=5432;Database=medchg;User Id=postgres;Password=uN3i1Hh0bYbCc4TyVAacBhmSzgqtzqxmOVjAn0QIChsJrSmu9PY2fw2q8EKKLpZ9;"            
         - name: AllowedHosts
           value: "*"        
         - name: BaseAddress
-          value: http://stg.medchg.com
+          value: https://stg.medchg.com
         - name: ASPNETCORE_URLS
           value: https://*:8081 
         - name: Jwt__Audience
@@ -84,6 +85,12 @@ metadata:
     nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"   
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/ssl-passthrough: "true"    
+    nginx.ingress.kubernetes.io/client-body-buffer-size: 64k
+    nginx.ingress.kubernetes.io/client-header-buffer-size: 100k
+    nginx.ingress.kubernetes.io/http2-max-header-size: 96k
+    nginx.ingress.kubernetes.io/large-client-header-buffers: 4 100k
+    nginx.ingress.kubernetes.io/proxy-body-size: 150m
+    nginx.ingress.kubernetes.io/proxy-buffer-size: 96k 
   name: stg-ing-medchg-fullstack
   namespace: stg-ns-medchg
 spec:

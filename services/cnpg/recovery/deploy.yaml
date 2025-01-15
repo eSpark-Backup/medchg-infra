@@ -1,0 +1,86 @@
+apiVersion: v1
+data:
+  password: dU4zaTFIaDBiWWJDYzRUeVZBYWNCaG1TemdxdHpxeG1PVmpBbjBRSUNoc0pyU211OVBZMmZ3MnE4RUtLTHBaOQ== #uN3i1Hh0bYbCc4TyVAacBhmSzgqtzqxmOVjAn0QIChsJrSmu9PY2fw2q8EKKLpZ9
+  username: cG9zdGdyZXM=  #postgres
+kind: Secret
+metadata:
+  name: superuser
+  namespace: recovered-cnpg
+type: kubernetes.io/basic-auth
+---
+apiVersion: v1
+data:
+  password: YWRtaW4xMjM0 #admin1234
+  username: YWRtaW4=  #admin
+kind: Secret
+metadata:
+  name: admin
+  namespace: recovered-cnpg
+type: kubernetes.io/basic-auth
+---
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: recovereddb
+  namespace: recovered-cnpg
+spec:
+  instances: 1
+  startDelay: 300
+  stopDelay: 300
+  primaryUpdateStrategy: unsupervised  
+  imageName: ghcr.io/cloudnative-pg/postgresql:17.0
+
+  enableSuperuserAccess: true
+  superuserSecret:
+    name: superuser
+
+  postgresql:
+    parameters:
+      shared_buffers: 256MB
+      pg_stat_statements.max: '10000'
+      pg_stat_statements.track: all
+      auto_explain.log_min_duration: '10s'
+    pg_hba:
+      - host all all 10.244.0.0/16 md5
+
+
+  bootstrap:
+    recovery:
+      source: dbserver # full recovery last point 
+      # PITR from an object store | for specific time 
+        #recoveryTarget:      
+        # Time base target for the recovery
+        #targetTime: "2023-08-11 11:14:21.00000+02"
+        
+  externalClusters:
+    - name: dbserver
+      barmanObjectStore:
+        destinationPath: "s3://k8s-backup-231224/dbbackup"
+        s3Credentials:
+          accessKeyId:
+            name: aws-s3-credentials
+            key: AWS_ACCESS_KEY_ID
+          secretAccessKey:
+            name: aws-s3-credentials
+            key: AWS_SECRET_ACCESS_KEY
+        wal:
+          compression: gzip      
+          maxParallel: 8
+      
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "300m"
+    limits:
+      memory: "1Gi"
+      cpu: "300m"
+  storage:
+    pvcTemplate:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 5Gi
+      storageClassName: local-path  
+      volumeMode: Filesystem
+    size: 5Gi           

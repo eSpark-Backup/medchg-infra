@@ -22,9 +22,6 @@ scp -r services ubuntu@10.0.20.221:./ #master
 ssh -i ~/.ssh/id_rsa ubuntu@10.0.20.221 #master 
 
 ssh -i ~/.ssh/id_rsa ubuntu@10.0.20.227 #worker1
-# for local volumes on each worker
-sudo mkdir /opt/volume
-sudo mkdir /opt/volume/kubernates
 
 # master k9s ui
 wget https://github.com/derailed/k9s/releases/download/v0.32.7/k9s_linux_amd64.deb
@@ -73,8 +70,7 @@ helm install nginx --values values.yaml ingress-nginx/ingress-nginx -n ingress-n
 
 cd
 cd services/storageclass
-kubectl apply -f standard.yaml
-kubectl apply -f pv.yaml
+kubectl apply -f https://raw.githubusercontent.com/rancher/local-path-provisioner/v0.0.30/deploy/local-path-storage.yaml
 
 cd 
 cd services/cnpg
@@ -177,15 +173,14 @@ df -h | grep s3fs
 					- [x] Helm chart for apllication deployment
 					- [x] Prod and Dev environments segregation with image filtering
 		- [x] Storage Class
-			- [x] no provision 
-			- [x] local-pv
+			- [x] local-path # local provisioner
 		- [x] NGINX Ingress
 		- [x] Test Deploy (for testing)
 		- [x] Cert Manager
 			- [x] Tested Lets Encrypt 
 		- [x] CNPG Posgress
 			- [x] Local storage PV 
-			- [x] User can access db via dfwcriticalcare.medchg.com:5432
+			- [x] User can access db via pgadmin.medchg.com:5432
 			- [x] Cloud backup on demand
 			- [ ] Cloud backup periodic
 		- [x] PGAdmin Web point to dfwcriticalcare.medchg.com

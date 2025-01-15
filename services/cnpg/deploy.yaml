@@ -1,6 +1,6 @@
 apiVersion: v1
 data:
-  password: dU4zaTFIaDBiWWJDYzRUeVZBYWNCaG1TemdxdHpxeG1PVmpBbjBRSUNoc0pyU211OVBZMmZ3MnE4RUtLTHBaOQ== #dU4zaTFIaDBiWWJDYzRUeVZBYWNCaG1TemdxdHpxeG1PVmpBbjBRSUNoc0pyU211OVBZMmZ3MnE4RUtLTHBaOQ
+  password: dU4zaTFIaDBiWWJDYzRUeVZBYWNCaG1TemdxdHpxeG1PVmpBbjBRSUNoc0pyU211OVBZMmZ3MnE4RUtLTHBaOQ== #uN3i1Hh0bYbCc4TyVAacBhmSzgqtzqxmOVjAn0QIChsJrSmu9PY2fw2q8EKKLpZ9
   username: cG9zdGdyZXM=  #postgres
 kind: Secret
 metadata:
@@ -80,6 +80,6 @@ spec:
       resources:
         requests:
           storage: 5Gi
-      storageClassName: local
+      storageClassName: local-path
       volumeMode: Filesystem
     size: 5Gi 
