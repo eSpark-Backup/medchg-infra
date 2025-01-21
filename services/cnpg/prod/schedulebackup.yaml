@@ -1,0 +1,10 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: ScheduledBackup
+metadata:
+  name: backup-midnight
+  namespace: cnpg-prod
+spec:
+  schedule: "0 0 0 * * *" # every midnight
+  backupOwnerReference: self
+  cluster:
+    name: dbserver-prod

@@ -1,0 +1,2 @@
+export aws_ci_bot_access_key='AKIA4GX3SSVUEAJFVG42'
+export aws_ci_bot_access_secret='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'

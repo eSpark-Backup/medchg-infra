@@ -1,4 +1,4 @@
-set version prod-v10
+set version stg-v51
 echo $version
 docker build -t testblazor:$version . 
 docker tag testblazor:$version 839119967592.dkr.ecr.us-east-1.amazonaws.com/k8s-services:$version

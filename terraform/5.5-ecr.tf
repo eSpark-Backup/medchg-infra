@@ -50,3 +50,45 @@ resource "aws_iam_role_policy_attachment" "k8s-ecr-master-access-attachment" {
 }
 
 
+# Create a policy to allow access to the ecr
+resource "aws_iam_policy" "k8s-ecr-services-ci-access-policy" {
+  name = "k8s-ecr-services-ci-access-policy"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+			"Effect": "Allow",
+            "Action": [
+                "ecr:GetAuthorizationToken",			
+                "ecr:BatchGetImage",
+                "ecr:BatchCheckLayerAvailability",
+                "ecr:CompleteLayerUpload",
+                "ecr:GetDownloadUrlForLayer",
+                "ecr:InitiateLayerUpload",
+                "ecr:PutImage",
+                "ecr:UploadLayerPart"
+            ],
+            "Resource": "*"
+      }
+    ]
+  })
+}
+
+
+# IAM ecr user 
+resource "aws_iam_user" "k8s-ci-bot" {
+  name = "k8s-ci-bot"
+}
+
+
+resource "aws_iam_user_policy_attachment" "k8s-ci-bot-attachment" {
+  user       = aws_iam_user.k8s-ci-bot.name
+  policy_arn = aws_iam_policy.k8s-ecr-services-ci-access-policy.arn
+}
+
+# 
+resource "aws_iam_access_key" "k8s-ci-bot-creds" {
+  user = aws_iam_user.k8s-ci-bot.name
+}
+

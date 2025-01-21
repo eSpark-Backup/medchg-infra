@@ -5,7 +5,7 @@ data:
 kind: Secret
 metadata:
   name: superuser
-  namespace: dev-cnpg
+  namespace: cnpg-stg
 type: kubernetes.io/basic-auth
 ---
 apiVersion: v1
@@ -15,14 +15,14 @@ data:
 kind: Secret
 metadata:
   name: admin
-  namespace: dev-cnpg
+  namespace: cnpg-stg
 type: kubernetes.io/basic-auth
 ---
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
-  name: dbserver
-  namespace: dev-cnpg  
+  name: dbserver-stg
+  namespace: cnpg-stg  
 spec:
   instances: 1
   startDelay: 300
@@ -52,27 +52,27 @@ spec:
       secret:
         name: admin
         
-  # Backup properties
-  backup:
-    barmanObjectStore:
-      destinationPath: "s3://k8s-backup-231224/dbbackup"
-      s3Credentials:
-        accessKeyId:
-          name: aws-s3-credentials
-          key: AWS_ACCESS_KEY_ID
-        secretAccessKey:
-          name: aws-s3-credentials
-          key: AWS_SECRET_ACCESS_KEY
-      wal:
-        compression: gzip      
+  # Backup properties only for prod
+  # backup:
+    # barmanObjectStore:
+      # destinationPath: "s3://k8s-backup-231224/dbbackup"
+      # s3Credentials:
+        # accessKeyId:
+          # name: aws-s3-credentials
+          # key: AWS_ACCESS_KEY_ID
+        # secretAccessKey:
+          # name: aws-s3-credentials
+          # key: AWS_SECRET_ACCESS_KEY
+      # wal:
+        # compression: gzip      
         
-  resources:
-    requests:
-      memory: "512Mi"
-      cpu: "1"
-    limits:
-      memory: "1Gi"
-      cpu: "2"
+  # resources:
+    # requests:
+      # memory: "512Mi"
+      # cpu: "1"
+    # limits:
+      # memory: "1Gi"
+      # cpu: "2"
   storage:
     pvcTemplate:
       accessModes:

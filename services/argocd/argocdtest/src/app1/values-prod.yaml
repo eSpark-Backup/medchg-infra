@@ -2,7 +2,7 @@ replicaCount: 1
 image:
   repository: 839119967592.dkr.ecr.us-east-1.amazonaws.com/k8s-services
   pullPolicy: Always
-  tag: prod-v9
+  tag: prod-v35
 imagePullSecrets:
 - name: regcred
 nameOverride: ""
