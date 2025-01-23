@@ -203,6 +203,16 @@ df -h | grep s3fs
 				- [ ] CI
 					- [x] Tested with github local repo
 				- [ ] CD
+					- [ ] Pod
+						- [x] image pull secret 
+							- [x] Job 
+							- [x] CronJob
+						- [x] Mount
+							- [x] TLS certificate  
+						- [x] env
+							- [x] DB
+					- [x] ingress
+						- [x] TLS
 					- [x] Tested with github local repo
 				
 	- [x] Terraform
@@ -263,10 +273,12 @@ aws ecr get-login-password --region <region> | ctr images registry login --usern
 
 aws ecr get-login-password --region us-east-1 | ctr images auth --username AWS --password-stdin 839119967592.dkr.ecr.us-east-1.amazonaws.com
 
+aws ecr get-login-password --region us-east-1 | buildah login --username AWS --password-stdin 839119967592.dkr.ecr.us-east-1.amazonaws.com
+
 
 ### working commadns
 ctr image pull 839119967592.dkr.ecr.us-east-1.amazonaws.com/k8s-services:latest
-ctr image pull --user "AWS:$(aws ecr get-login-password --region us-east-1)" 839119967592.dkr.ecr.us-east-1.amazonaws.com/k8s-services:latest
+ctr image pull --user "AWS:$(aws ecr get-login-password --region us-east-1)" 839119967592.dkr.ecr.us-east-1.amazonaws.com/k8s-services:stg-v46
 
 mkdir -p /etc/containerd/certs.d/839119967592.dkr.ecr.us-east-1.amazonaws.com
 

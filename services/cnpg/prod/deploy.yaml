@@ -54,6 +54,7 @@ spec:
         
   # Backup properties
   backup:
+    retentionPolicy: "14d"
     barmanObjectStore:
       destinationPath: "s3://k8s-backup-231224/dbbackup-prod"
       s3Credentials:

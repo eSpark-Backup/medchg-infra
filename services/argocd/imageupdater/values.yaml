@@ -159,7 +159,7 @@ config:
       default: true
       insecure: false
       credentials: ext:/scripts/ecr-login.sh    
-      credsexpire: 12h  
+      credsexpire: 1h  
     # - name: Docker Hub
     #   api_url: https://registry-1.docker.io
     #   ping: yes

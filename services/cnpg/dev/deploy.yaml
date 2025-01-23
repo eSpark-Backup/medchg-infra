@@ -83,3 +83,19 @@ spec:
       storageClassName: local-path
       volumeMode: Filesystem
     size: 5Gi 
+     
+  managed:
+    services:
+      additional:
+      - selectorType: rw
+        serviceTemplate:
+          metadata:
+            name: "dbserver-stg-external-rw"
+          spec:
+            type: NodePort
+            ports:
+              - name: postgres
+                port: 5432
+                targetPort: 5432
+                nodePort: 30543
+                protocol: TCP
