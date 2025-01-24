@@ -12,7 +12,7 @@ cd medchg repo folder
 gh secret set aws_ci_bot_access_key --body $(terraform -chdir="/mnt/d/Projects/espark/knozi/k8s/terraform" output -raw aws_ci_bot_access_key)
 gh secret set aws_ci_bot_access_secret --body $(terraform -chdir="/mnt/d/Projects/espark/knozi/k8s/terraform" output -raw aws_ci_bot_access_secret)
 gh secret set PAT --body $(echo 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) # smhrazaespark/medcjhrd
-gh secret set PAT --body $(echo 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) # production/medcjhrd
+	gh secret set PAT --body $(echo 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) # production/medcjhrd
 # for creation
 terraform apply 
 

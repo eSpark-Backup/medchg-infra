@@ -1,0 +1,59 @@
+apiVersion: v1 # kubectl create job --from=cronjob/ecr-creds-refresh jtb -n medchg-stg
+kind: ServiceAccount
+metadata:
+  name: test-sa
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: test-role
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list", "create", "update", "delete", "watch"]  
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: test-rolebinding
+subjects:
+- kind: ServiceAccount
+  name: test-sa
+roleRef:
+  kind: Role
+  name: test-role
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: testjob
+spec:
+  template:
+    spec:
+      containers:
+        - name: testjob
+          image: bitnami/kubectl:latest #Input the image from step 1
+          command:
+            - /bin/sh
+            - '-c'
+            - >-
+              echo "generating secrets... "
+              
+              kubectl get secret medchg -n ${namespace} -o jsonpath='{.data.tls\.crt}' | base64 -d > stg.medchg.com.crt
+              
+              kubectl get secret medchg -n ${namespace} -o jsonpath='{.data.tls\.key}' | base64 -d > stg.medchg.com.key
+              
+              openssl pkcs12 -export -out stg.medchg.com.pfx -inkey stg.medchg.com.key -in stg.medchg.com.crt -passout pass:stg.medchg.com
+
+              kubectl create secret generic stg-sc-identity-ssl -n ${namespace} --from-file=certificate=./stg.medchg.com.pfx
+
+          env:
+            - name: namespace
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace              
+          imagePullPolicy: IfNotPresent
+      restartPolicy: OnFailure
+      serviceAccountName: test-sa
+      serviceAccount: test-sa     

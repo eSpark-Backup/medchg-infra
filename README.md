@@ -1,3 +1,6 @@
+# Big picture
+![Alt text](k8s.jpg)
+
 ## SSH keep alive
 nano $HOME/.ssh/config
 Host *
@@ -67,6 +70,17 @@ helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 helm repo update
 helm install nginx --values values.yaml ingress-nginx/ingress-nginx -n ingress-nginx --create-namespace 
 
+
+cd
+cd services/cert-manager
+helm install \
+  cert-manager jetstack/cert-manager \
+  --namespace cert-manager \
+  --create-namespace \
+  --version v1.16.3 \
+  --set crds.enabled=true
+kubectl apply -f prod.yaml
+kubectl apply -f stg.yaml
 
 cd
 cd services/storageclass
