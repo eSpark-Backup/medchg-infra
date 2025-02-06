@@ -131,6 +131,16 @@ resource "aws_vpc_security_group_ingress_rule" "k8_allow_db30543" {
     Name = "k8_allow_db30543"
   }
 }
+resource "aws_vpc_security_group_ingress_rule" "k8_allow_db30544" {
+  security_group_id = aws_security_group.k8s_workers_sg.id
+  cidr_ipv4         = var.vpc_All_cidr_block
+  from_port         = 30544
+  ip_protocol       = "tcp"
+  to_port           = 30544
+  tags = {
+    Name = "k8_allow_db30544"
+  }
+}
 resource "aws_vpc_security_group_ingress_rule" "k8_allow_https_ingress" {
   security_group_id = aws_security_group.k8s_workers_sg.id
   cidr_ipv4         = var.vpc_All_cidr_block
@@ -214,6 +224,16 @@ resource "aws_vpc_security_group_ingress_rule" "k8_allow_nlb_db5432" {
   to_port           = 5432
   tags = {
     Name = "k8_allow_nlb_db5432"
+  }
+}
+resource "aws_vpc_security_group_ingress_rule" "k8_allow_nlb_db5434" {
+  security_group_id = aws_security_group.k8s_nlb.id
+  cidr_ipv4         = var.vpc_All_cidr_block
+  from_port         = 5434
+  ip_protocol       = "tcp"
+  to_port           = 5434
+  tags = {
+    Name = "k8_allow_nlb_db5434"
   }
 }
 
