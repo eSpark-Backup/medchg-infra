@@ -31,21 +31,21 @@ resource "aws_lb_listener" "k8s-listner-https" {
   }
 }
 # Listener for NLB
-# resource "aws_lb_listener" "k8s-listner-db5432" {
-  # load_balancer_arn = aws_lb.k8s-nlb.arn
-  # port              = 5432
-  # protocol          = "TCP"
-  # default_action {
-    # type             = "forward"
-    # target_group_arn = aws_lb_target_group.k8s-ingress-db30543.arn
-  # }
-# }
-# resource "aws_lb_listener" "k8s-listner-db5434" {
-  # load_balancer_arn = aws_lb.k8s-nlb.arn
-  # port              = 5434
-  # protocol          = "TCP"
-  # default_action {
-    # type             = "forward"
-    # target_group_arn = aws_lb_target_group.k8s-ingress-db30544.arn
-  # }
-# }
+resource "aws_lb_listener" "k8s-listner-db5432" {
+  load_balancer_arn = aws_lb.k8s-nlb.arn
+  port              = 5432
+  protocol          = "TCP"
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.k8s-ingress-db30543.arn
+  }
+}
+resource "aws_lb_listener" "k8s-listner-db5434" {
+  load_balancer_arn = aws_lb.k8s-nlb.arn
+  port              = 5434
+  protocol          = "TCP"
+  default_action {
+    type             = "forward"
+    target_group_arn = aws_lb_target_group.k8s-ingress-db30544.arn
+  }
+}
